@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Product;
@@ -20,7 +22,7 @@ import com.example.demo.service.ProductService;
 import ch.qos.logback.classic.Logger;
 
 @RestController
-@RequestMapping(value = "/product")
+@RequestMapping(value = "/")
 public class ProductController {
 	private static final Logger LOG = (Logger) LoggerFactory.getLogger(ProductController.class);
 	
@@ -28,9 +30,29 @@ public class ProductController {
 	 
     @Autowired
     //ProductService service;
+    
+    // Home page
+    @GetMapping(produces = "text/html; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> home() {
+        LOG.info("Fetching all products from the redis.");
+        //final Map<String, Product> productMap = service.findAll();
+        //return productMap;
+        return  ResponseEntity.ok("<!DOCTYPE html>\r\n"
+        		+ "<html>\r\n"
+        		+ "    <head>\r\n"
+        		+ "        <title>Home Page</title>\r\n"
+        		+ "        <meta charset=\"UTF-8\">\r\n"
+        		+ "        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n"
+        		+ "    </head>\r\n"
+        		+ "<body>\r\n" 
+        		+ "<h1> App product </h1>" 
+        		+ "</body>\r\n"
+        		+ "</html>");
+    }
  
     // Save a new product.
-    @PostMapping
+    @PostMapping("/product")
     public String save(@RequestBody final Product product) {
         //LOG.info("Saving the new product to the redis.");
         //service.save(product);
@@ -40,7 +62,7 @@ public class ProductController {
     }
  
     // Get all products
-    @GetMapping()
+    @GetMapping("/product")
     public ArrayList<Product> findAll() {
         LOG.info("Fetching all products from the redis.");
         //final Map<String, Product> productMap = service.findAll();
@@ -49,7 +71,7 @@ public class ProductController {
     }
  
     // Get product by id
-    @GetMapping("/{id}")
+    @GetMapping("/product/{id}")
     public Product findById(@PathVariable("id") final String id) {
         LOG.info("Fetching product with id= " + id);
         //return service.findById(id);
@@ -61,7 +83,7 @@ public class ProductController {
     }
     
     // update product by id
-    @PutMapping("/{id}")
+    @PutMapping("/product/{id}")
     public String update(@PathVariable("id") final String id, @RequestBody final Product newProduct) {
         LOG.info("Deleting product with id= " + id);
         //service.updateById(id, product);
@@ -76,7 +98,7 @@ public class ProductController {
     }
  
     // Delete product by id
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/product/{id}")
     public String delete(@PathVariable("id") final String id) {
         LOG.info("Deleting product with id= " + id);
         //service.delete(id);
