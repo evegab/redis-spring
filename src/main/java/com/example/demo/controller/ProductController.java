@@ -34,7 +34,8 @@ public class ProductController {
     public String save(@RequestBody final Product product) {
         //LOG.info("Saving the new product to the redis.");
         //service.save(product);
-    	this.list.add(product);
+    	if(product.getId() != null)
+    		this.list.add(product);
         return "Successfully added. PRODUCT with id= " + product.getId();
     }
  
@@ -53,7 +54,7 @@ public class ProductController {
         LOG.info("Fetching product with id= " + id);
         //return service.findById(id);
         for (Product product : list) {
-			if(product.getId().equals(id))
+			if(product.getId() != null && product.getId().equals(id))
 				return product;
 		}
         return null;
@@ -65,7 +66,7 @@ public class ProductController {
         LOG.info("Deleting product with id= " + id);
         //service.updateById(id, product);
         for (Product product : list) {
-			if(product.getId().equals(id)) {
+			if(product.getId() != null && product.getId().equals(id)) {
 				product.setName(newProduct.getName());
 				product.setPrice(newProduct.getPrice());
 				product.setQuantity(newProduct.getQuantity());
@@ -79,9 +80,9 @@ public class ProductController {
     public String delete(@PathVariable("id") final String id) {
         LOG.info("Deleting product with id= " + id);
         //service.delete(id);
-        for (Product product : list) {
-			if(product.getId().equals(id)) {
-				this.list.remove(product);
+        for (int i= 0; i< this.list.size(); i++) {
+			if(list.get(i).getId() != null && list.get(i).getId().equals(id)) {
+				this.list.remove(i);
 			}
 		}
         return "product" + id + ", eliminado";
